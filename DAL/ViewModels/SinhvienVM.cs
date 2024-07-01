@@ -1,11 +1,10 @@
 ﻿using DAL.Models;
 
-namespace DAL.ViewModels
+namespace DAL.ViewModels;
+
+public class SinhvienVM
 {
-    public class SinhvienVM
-    {
-        public Sinhvien Sinhvien { get; set; }
-        public string TenPH { get; set; }
-        public string NgheNghiepPH { get; set; }
-    }
+    public Sinhvien Sinhvien { get; set; }
+    public string TenPH { get; set; }
+    public string NgheNghiepPH { get; set; }
 }

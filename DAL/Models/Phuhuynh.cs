@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace DAL.Models;
 
-namespace DAL.Models;
-
-public partial class Phuhuynh
+public class Phuhuynh
 {
     public int Id { get; set; }
 

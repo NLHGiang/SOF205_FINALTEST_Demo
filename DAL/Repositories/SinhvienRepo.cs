@@ -2,147 +2,149 @@
 using DAL.Models;
 using DAL.ViewModels;
 
-namespace DAL.Repositories
+namespace DAL.Repositories;
+
+public class SinhvienRepo : ISinhvienRepo
 {
-    public class SinhvienRepo : ISinhvienRepo
+    private readonly Sof205FinalTestContext _dbContext;
+
+    public SinhvienRepo()
     {
-        Sof205FinalTestContext _dbContext;
+        _dbContext = new Sof205FinalTestContext();
+    }
 
-        public SinhvienRepo()
-        {
-            _dbContext = new();
-        }
+    public List<SinhvienVM> GetAll(string searchText, string searchType)
+    {
+        if (string.Equals(searchType, SearchType.Sdt))
+            return _dbContext.Sinhviens.Where(c => c.Sdt.Contains(searchText))
+                .Select(c => new SinhvienVM
+                {
+                    Sinhvien = c,
+                    TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
+                    NgheNghiepPH = c.IdPh == null
+                        ? "N/A"
+                        : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
+                }).ToList();
 
-        public List<SinhvienVM> GetAll(string searchText, string searchType)
-        {
-            if (string.Equals(searchType, SearchType.Sdt))
-            {
-                return _dbContext.Sinhviens.Where(c => c.Sdt.Contains(searchText))
-                    .Select(c => new SinhvienVM()
-                    {
-                        Sinhvien = c,
-                        TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
-                        NgheNghiepPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
-                    }).ToList();
-            }
+        if (string.Equals(searchType, SearchType.Diachi))
+            return _dbContext.Sinhviens.Where(c => c.Diachi.Contains(searchText))
+                .Select(c => new SinhvienVM
+                {
+                    Sinhvien = c,
+                    TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
+                    NgheNghiepPH = c.IdPh == null
+                        ? "N/A"
+                        : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
+                }).ToList();
 
-            if (string.Equals(searchType, SearchType.Diachi))
-            {
-                return _dbContext.Sinhviens.Where(c => c.Diachi.Contains(searchText))
-                    .Select(c => new SinhvienVM()
-                    {
-                        Sinhvien = c,
-                        TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
-                        NgheNghiepPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
-                    }).ToList();
-            }
-
-            if (string.Equals(searchType, SearchType.TenPH))
-            {
-                return _dbContext.Sinhviens
-                    .Select(c => new SinhvienVM()
-                    {
-                        Sinhvien = c,
-                        TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
-                        NgheNghiepPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
-                    })
-                    .ToList();
-            }
-
-            if (string.Equals(searchType, SearchType.NgheNghiepPH))
-            {
-                return _dbContext.Sinhviens
-                    .Select(c => new SinhvienVM()
-                    {
-                        Sinhvien = c,
-                        TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
-                        NgheNghiepPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
-                    })
-                    .Where(c => c.NgheNghiepPH.Contains(searchText)).ToList();
-            }
-
-            if (string.Equals(searchType, SearchType.All))
-            {
-                return _dbContext.Sinhviens
-                    .Select(c => new SinhvienVM()
-                    {
-                        Sinhvien = c,
-                        TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
-                        NgheNghiepPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
-                    })
-                    .Where(c => c.Sinhvien.Sdt.Contains(searchText) || c.Sinhvien.Diachi.Contains(searchText) || c.TenPH.Contains(searchText) || c.NgheNghiepPH.Contains(searchText)).ToList();
-            }
-
+        if (string.Equals(searchType, SearchType.TenPH))
             return _dbContext.Sinhviens
-                    .Select(c => new SinhvienVM()
-                    {
-                        Sinhvien = c,
-                        TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
-                        NgheNghiepPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
-                    }).ToList();
-        }
+                .Select(c => new SinhvienVM
+                {
+                    Sinhvien = c,
+                    TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
+                    NgheNghiepPH = c.IdPh == null
+                        ? "N/A"
+                        : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
+                })
+                .ToList();
 
-        public Sinhvien GetById(int id)
+        if (string.Equals(searchType, SearchType.NgheNghiepPH))
+            return _dbContext.Sinhviens
+                .Select(c => new SinhvienVM
+                {
+                    Sinhvien = c,
+                    TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
+                    NgheNghiepPH = c.IdPh == null
+                        ? "N/A"
+                        : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
+                })
+                .Where(c => c.NgheNghiepPH.Contains(searchText)).ToList();
+
+        if (string.Equals(searchType, SearchType.All))
+            return _dbContext.Sinhviens
+                .Select(c => new SinhvienVM
+                {
+                    Sinhvien = c,
+                    TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
+                    NgheNghiepPH = c.IdPh == null
+                        ? "N/A"
+                        : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
+                })
+                .Where(c => c.Sinhvien.Sdt.Contains(searchText) || c.Sinhvien.Diachi.Contains(searchText) ||
+                            c.TenPH.Contains(searchText) || c.NgheNghiepPH.Contains(searchText)).ToList();
+
+        return _dbContext.Sinhviens
+            .Select(c => new SinhvienVM
+            {
+                Sinhvien = c,
+                TenPH = c.IdPh == null ? "N/A" : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Ten,
+                NgheNghiepPH = c.IdPh == null
+                    ? "N/A"
+                    : _dbContext.Phuhuynhs.FirstOrDefault(ph => ph.Id == c.IdPh)!.Nghenghiep
+            }).ToList();
+    }
+
+    public Sinhvien GetById(int id)
+    {
+        return _dbContext.Sinhviens.FirstOrDefault(c => c.Id == id);
+    }
+
+    public bool Add(Sinhvien sinhvien)
+    {
+        try
         {
-            return _dbContext.Sinhviens.FirstOrDefault(c => c.Id == id);
+            _dbContext.Sinhviens.Add(sinhvien);
+            _dbContext.SaveChanges();
+
+            return true;
         }
-
-        public bool Add(Sinhvien sinhvien)
+        catch
         {
-            try
-            {
-                _dbContext.Sinhviens.Add(sinhvien);
-                _dbContext.SaveChanges();
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return false;
         }
+    }
 
-        public bool Update(int id, Sinhvien sinhvien)
+    public bool Update(int id, Sinhvien sinhvien)
+    {
+        try
         {
-            try
-            {
-                var existedObj = _dbContext.Sinhviens.FirstOrDefault(c => c.Id == id);
+            var existedObj = _dbContext.Sinhviens.FirstOrDefault(c => c.Id == id);
 
-                if (existedObj == null) return false;
+            if (existedObj == null) return false;
 
-                existedObj.Ten = sinhvien.Ten;
-                existedObj.Email = sinhvien.Email;
-                existedObj.Sdt = sinhvien.Sdt;
-                existedObj.Diachi = sinhvien.Diachi;
+            existedObj.Ten = sinhvien.Ten;
+            existedObj.Email = sinhvien.Email;
+            existedObj.Sdt = sinhvien.Sdt;
+            existedObj.Diachi = sinhvien.Diachi;
 
-                _dbContext.Sinhviens.Update(existedObj);
-                _dbContext.SaveChanges();
+            _dbContext.Sinhviens.Update(existedObj);
+            _dbContext.SaveChanges();
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return true;
         }
-
-        public bool Remove(int id)
+        catch
         {
-            try
-            {
-                var existedObj = _dbContext.Sinhviens.FirstOrDefault(c => c.Id == id);
+            return false;
+        }
+    }
 
-                if (existedObj == null) return false;
+    public bool Remove(int id)
+    {
+        try
+        {
+            var existedObj = _dbContext.Sinhviens.FirstOrDefault(c => c.Id == id);
 
-                _dbContext.Sinhviens.Remove(existedObj);
-                _dbContext.SaveChanges();
+            if (existedObj == null) return false;
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            _dbContext.Sinhviens.Remove(existedObj);
+            _dbContext.SaveChanges();
+
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }
